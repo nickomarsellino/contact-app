@@ -5,6 +5,7 @@ import { css } from '@emotion/react'
 
 interface ButtonProps {
   textButton?: string;
+  colorButton?: string;
 }
 
 const greenColor = css`
@@ -13,8 +14,16 @@ const greenColor = css`
   color: white;
 `
 
-const ButtonType = styled.button`
-  ${greenColor};
+const redColor = css`
+  background-color: rgb(224, 41, 84);
+  border-color: rgb(224, 41, 84);
+  color: white;
+`
+
+ 
+const Button = ({ textButton = '', colorButton = '' }: ButtonProps) => {
+  const ButtonType = styled.button`
+  ${colorButton === 'red' ? redColor : greenColor};
   font-weight: 800;
   font-size: 16px;
   padding: 4px 16px;
@@ -23,10 +32,8 @@ const ButtonType = styled.button`
   justify-content: center;
   align-items: center;
   border-radius: 4px;
+  margin-bottom: 8px;
 `
-
-
-const Button = ({ textButton = '' }: ButtonProps) => {
   return <ButtonType>{textButton}</ButtonType>;
 };
 
