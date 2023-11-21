@@ -4,14 +4,17 @@ import styled from "@emotion/styled";
 // import { css } from "@emotion/react";
 
 import { ReactComponent as TrashIcon } from "../../assets/image/trash.svg";
+import { ReactComponent as FavoriteIcon } from "../../assets/image/icon-fav.svg";
+import { ReactComponent as FavoriteIconActive } from "../../assets/image/icon-fav-active.svg";
 
 interface ContactCardProps {
   userName?: string;
   userPhoneNumber?: string;
+  userFavoriteActive?: boolean;
 }
 
 type actionButtonProps = {
-  src?: string;
+  noHover?: boolean;
   color?: string;
 };
 
@@ -71,7 +74,8 @@ const ContactActionButton = styled("div")<actionButtonProps>`
   padding: 4px;
 
   &:hover {
-    background-color: rgb(197, 36, 73);
+    background-color: ${(props) =>
+      props.noHover ? props.noHover : "rgb(197, 36, 73);"};
   }
 `;
 
@@ -98,13 +102,14 @@ const handleOnClick = () => {
 const ContactCard: React.FC<ContactCardProps> = ({
   userName,
   userPhoneNumber,
+  userFavoriteActive,
 }) => {
   return (
     <ContactCardComponent>
       <ContentWrapper>
         <ContactContent>
-          <ContactActionButton>
-            <StyledTrashIcon />
+          <ContactActionButton color="none" noHover onClick={handleOnClick}>
+            {userFavoriteActive ? <FavoriteIconActive /> : <FavoriteIcon />}
           </ContactActionButton>
           <ContactProfile>
             <p>i</p>

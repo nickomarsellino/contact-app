@@ -30,10 +30,10 @@ const ContactList = ({
 }: ContactListProps) => {
   return (
     <ContactlistComponent>
-      <ContactCard userName="Contact 1" userPhoneNumber="083243242332" />
-      <ContactCard userName="Contact 2" userPhoneNumber="083243242332" />
-      <ContactCard userName="Contact 3" userPhoneNumber="083243242332" />
-      <ContactCard userName="Contact 4" userPhoneNumber="083243242332" />
+      <ContactCard userName="Contact 1" userPhoneNumber="083243242332" userFavoriteActive/>
+      <ContactCard userName="Contact 2" userPhoneNumber="083243242332" userFavoriteActive/>
+      <ContactCard userName="Contact 3" userPhoneNumber="083243242332" userFavoriteActive/>
+      <ContactCard userName="Contact 4" userPhoneNumber="083243242332" userFavoriteActive/>
       <ContactCard userName="Contact 5" userPhoneNumber="083243242332" />
       <ContactCard userName="Contact 6" userPhoneNumber="083243242332" />
       <ContactCard userName="Contact 7" userPhoneNumber="083243242332" />
