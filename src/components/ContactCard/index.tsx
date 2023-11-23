@@ -1,22 +1,16 @@
 // ContactCard Component
 // --------------------------------------------------------
 import styled from "@emotion/styled";
-// import { css } from "@emotion/react";
+import { Contact } from "../../models";
 
 import { ReactComponent as TrashIcon } from "../../assets/image/trash.svg";
 import { ReactComponent as FavoriteIcon } from "../../assets/image/icon-fav.svg";
 import { ReactComponent as FavoriteIconActive } from "../../assets/image/icon-fav-active.svg";
 
-
-interface UserData {
-  first_name?: string;
-  last_name?: string;
-  // Add other properties if available in your data object
-}
-
 interface ContactCardProps {
-  itemData?: UserData;
+  itemData?: Contact;
   userFavoriteActive?: boolean;
+  onDelete?: () => void;
 }
 
 type actionButtonProps = {
@@ -105,7 +99,7 @@ const handleOnClick = () => {
   console.log("Div clicked!");
 };
 
-const ContactCard: React.FC<ContactCardProps> = ({ itemData, userFavoriteActive }) => {
+const ContactCard: React.FC<ContactCardProps> = ({ itemData, userFavoriteActive, onDelete }) => {
   const userName = itemData ? `${itemData.first_name} ${itemData.last_name}` : 'Unknown';
   return (
     <ContactCardComponent>
@@ -123,7 +117,7 @@ const ContactCard: React.FC<ContactCardProps> = ({ itemData, userFavoriteActive 
           </div>
         </ContactContent>
         {/* <ContactActionButton color="rgb(243, 104, 25)"><StyledTrashIcon/></ContactActionButton> */}
-        <ContactActionButton onClick={handleOnClick}>
+        <ContactActionButton onClick={onDelete}>
           <StyledTrashIcon />
         </ContactActionButton>
       </ContentWrapper>

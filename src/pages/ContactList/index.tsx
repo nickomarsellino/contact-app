@@ -1,4 +1,5 @@
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
+import { GET_LIST_CONTACT, DELETE_CONTACT } from "../../query";
 
 import {
   Button,
@@ -10,42 +11,27 @@ interface ContactListProps {
   contactList?: string;
 }
 
-// Add New Data
-const GET_LIST_CONTACT = gql`
-  query GetContactList(
-    $distinct_on: [contact_select_column!]
-    $limit: Int
-    $offset: Int
-    $order_by: [contact_order_by!]
-    $where: contact_bool_exp
-  ) {
-    contact(
-      distinct_on: $distinct_on
-      limit: $limit
-      offset: $offset
-      order_by: $order_by
-      where: $where
-    ) {
-      created_at
-      first_name
-      id
-      last_name
-      phones {
-        number
-      }
-    }
-  }
-`;
-
-
-const onClickButton = () => {
-  window.location.href = "/contact/add";
-};
-
 const ContactList = ({
   contactList = "contact-list-compnent",
 }: ContactListProps) => {
   const { loading, error, data } = useQuery(GET_LIST_CONTACT);
+  const [deleteContact] = useMutation(DELETE_CONTACT, {
+    refetchQueries: [GET_LIST_CONTACT],
+  });
+  const onClickButton = () => {
+    window.location.href = "/contact/add";
+  };
+
+  const onClickDeleteContact = (id: number) => {
+    console.log("id: ", id);
+    deleteContact({ variables: { id: id } })
+      .then(() => {
+        alert("Berhasil Delete Contact");
+      })
+      .catch(() => {
+        alert("Gagal Delete Contact");
+      });
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
@@ -57,7 +43,10 @@ const ContactList = ({
       {/* <Button colorButton="red" textButton="Delete Contact"/> */}
       <InputSearch />
       <div>
-        <ContactListComponent listData={data.contact}/>
+        <ContactListComponent
+          listData={data.contact}
+          handleClickDelete={onClickDeleteContact}
+        />
       </div>
     </div>
   );

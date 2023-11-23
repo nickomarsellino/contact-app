@@ -1,10 +1,12 @@
 // ContactList Component
 // --------------------------------------------------------
 import styled from "@emotion/styled";
+import { Contact } from "../../models";
 import { ContactCard } from "../../components";
 
 interface ContactListProps {
-  listData?: Array<string>;
+  listData: Array<Contact>;
+  handleClickDelete: Function;
 }
 
 const ContactlistComponent = styled("div")`
@@ -23,12 +25,16 @@ const ContactlistComponent = styled("div")`
   }
 `;
 
-const ContactList: React.FC<ContactListProps> = ({ listData }) => {
+
+const ContactList: React.FC<ContactListProps> = ({ listData, handleClickDelete }) => {
+  const handleDelete = (id: number) => {
+    handleClickDelete(id);
+  }
   return (
     <ContactlistComponent>
       <>
-        {listData?.map((item) => (
-          <ContactCard userFavoriteActive />
+        {listData.map((item) => (
+          <ContactCard userFavoriteActive onDelete={() => handleDelete(item.id)} itemData={item}/>
         ))}
       </>
     </ContactlistComponent>

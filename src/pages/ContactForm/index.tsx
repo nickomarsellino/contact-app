@@ -1,5 +1,6 @@
 import { Formik, Field, FieldArray, Form, ErrorMessage } from "formik";
-import { Button } from "../../components";
+import { useMutation, ApolloError } from "@apollo/client";
+import { ADD_CONTACT } from "../../query";
 import styled from "@emotion/styled";
 
 interface ContactFormProps {
@@ -80,15 +81,36 @@ const ButtonType = styled.button`
   cursor: pointer;
 `;
 
-const ContactForm = ({ contactForm = "Contact Form" }: ContactFormProps) => {
-  const initialValues = {
-    first_name: "",
-    last_name: "",
-    phones: [""], // Initial phone array with one empty string
-  };
+interface Contact {
+  first_name: string;
+  last_name: string;
+  phones: string[];
+}
 
-  const handleSubmit = (values: typeof initialValues) => {
-    alert(JSON.stringify(values, null, 2));
+const initialValues: Contact = {
+  first_name: "",
+  last_name: "",
+  phones: [],
+};
+
+const ContactForm = ({ contactForm = "Contact Form" }: ContactFormProps) => {
+  const [addContact, { loading, error, data }] = useMutation(ADD_CONTACT);
+
+  const handleSubmit = (values: Contact) => {
+    const formData = {
+      ...values,
+      phones: values.phones.map((phone) => {
+        return { number: phone };
+      }),
+    };
+    addContact({ variables: { ...formData } })
+      .then(() => {
+        alert("Berhasil Add Contact");
+      })
+      .catch((error) => {
+        console.log(error.graphQLErrors[0].message);
+      });
+    console.log("formData: ", formData);
   };
 
   return (
@@ -145,7 +167,10 @@ const ContactForm = ({ contactForm = "Contact Form" }: ContactFormProps) => {
                                   placeholder="Phone Number"
                                 />
                               </Input>
-                              <button type="button"  onClick={() => remove(index)}>
+                              <button
+                                type="button"
+                                onClick={() => remove(index)}
+                              >
                                 x
                               </button>
                               {/* <Button
