@@ -6,12 +6,14 @@ interface InputFormProps {
   label?: string;
   width?: string;
   placeholder?: string;
+  name?: string;
   onChange?: Function;
 }
 
 const InputForm: React.FC<InputFormProps> = ({
   label,
   placeholder,
+  name,
   width,
   onChange,
 }) => {
@@ -51,7 +53,8 @@ const InputForm: React.FC<InputFormProps> = ({
     <InputFormComponent>
       <Label>{label}</Label>
       <Input
-        id="test"
+        name={name}
+        id={name}
         type="text"
         placeholder={placeholder}
         autoComplete="off"

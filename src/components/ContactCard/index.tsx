@@ -7,9 +7,15 @@ import { ReactComponent as TrashIcon } from "../../assets/image/trash.svg";
 import { ReactComponent as FavoriteIcon } from "../../assets/image/icon-fav.svg";
 import { ReactComponent as FavoriteIconActive } from "../../assets/image/icon-fav-active.svg";
 
+
+interface UserData {
+  first_name?: string;
+  last_name?: string;
+  // Add other properties if available in your data object
+}
+
 interface ContactCardProps {
-  userName?: string;
-  userPhoneNumber?: string;
+  itemData?: UserData;
   userFavoriteActive?: boolean;
 }
 
@@ -99,11 +105,8 @@ const handleOnClick = () => {
   console.log("Div clicked!");
 };
 
-const ContactCard: React.FC<ContactCardProps> = ({
-  userName,
-  userPhoneNumber,
-  userFavoriteActive,
-}) => {
+const ContactCard: React.FC<ContactCardProps> = ({ itemData, userFavoriteActive }) => {
+  const userName = itemData ? `${itemData.first_name} ${itemData.last_name}` : 'Unknown';
   return (
     <ContactCardComponent>
       <ContentWrapper>
@@ -116,7 +119,7 @@ const ContactCard: React.FC<ContactCardProps> = ({
           </ContactProfile>
           <div>
             <ContactName>{userName}</ContactName>
-            <ContactPhone>{userPhoneNumber}</ContactPhone>
+            {/* <ContactPhone>{userPhoneNumber}</ContactPhone> */}
           </div>
         </ContactContent>
         {/* <ContactActionButton color="rgb(243, 104, 25)"><StyledTrashIcon/></ContactActionButton> */}

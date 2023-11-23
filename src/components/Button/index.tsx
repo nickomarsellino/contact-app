@@ -5,6 +5,7 @@ import { MouseEventHandler } from 'react';
 import { css } from '@emotion/react'
 
 interface ButtonProps {
+  type?: string
   textButton?: string;
   colorButton?: string;
   onClickButton?: MouseEventHandler<HTMLButtonElement>;
@@ -24,7 +25,7 @@ const redColor = css`
 
 
 const Button: React.FC<ButtonProps> = ({
-  textButton, colorButton, onClickButton
+  textButton, colorButton, type, onClickButton
 }) => {
   const ButtonType = styled.button`
   ${colorButton === 'red' ? redColor : greenColor};
@@ -39,7 +40,7 @@ const Button: React.FC<ButtonProps> = ({
   margin-bottom: 8px;
   cursor: pointer;
 `
-  return <ButtonType onClick={onClickButton}>{textButton}</ButtonType>;
+  return <ButtonType  onClick={onClickButton}>{textButton}</ButtonType>;
 };
 
 export default Button;

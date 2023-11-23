@@ -4,8 +4,7 @@ import styled from "@emotion/styled";
 import { ContactCard } from "../../components";
 
 interface ContactListProps {
-  userName?: string;
-  userPhoneNumber?: string;
+  listData?: Array<string>;
 }
 
 const ContactlistComponent = styled("div")`
@@ -24,26 +23,14 @@ const ContactlistComponent = styled("div")`
   }
 `;
 
-const ContactList = ({
-  userName = "Ini Name",
-  userPhoneNumber = "0812-3445-4443",
-}: ContactListProps) => {
+const ContactList: React.FC<ContactListProps> = ({ listData }) => {
   return (
     <ContactlistComponent>
-      <ContactCard userName="Contact 1" userPhoneNumber="083243242332" userFavoriteActive/>
-      <ContactCard userName="Contact 2" userPhoneNumber="083243242332" userFavoriteActive/>
-      <ContactCard userName="Contact 3" userPhoneNumber="083243242332" userFavoriteActive/>
-      <ContactCard userName="Contact 4" userPhoneNumber="083243242332" userFavoriteActive/>
-      <ContactCard userName="Contact 5" userPhoneNumber="083243242332" />
-      <ContactCard userName="Contact 6" userPhoneNumber="083243242332" />
-      <ContactCard userName="Contact 7" userPhoneNumber="083243242332" />
-      <ContactCard userName="Contact 8" userPhoneNumber="083243242332" />
-      <ContactCard userName="Contact 9" userPhoneNumber="083243242332" />
-      <ContactCard userName="Contact 10" userPhoneNumber="083243242332" />
-      <ContactCard userName="Contact 11" userPhoneNumber="083243242332" />
-      <ContactCard userName="Contact 12" userPhoneNumber="083243242332" />
-      <ContactCard userName="Contact 13" userPhoneNumber="083243242332" />
-      <ContactCard userName="Contact 14" userPhoneNumber="083243242332" />
+      <>
+        {listData?.map((item) => (
+          <ContactCard userFavoriteActive />
+        ))}
+      </>
     </ContactlistComponent>
   );
 };
