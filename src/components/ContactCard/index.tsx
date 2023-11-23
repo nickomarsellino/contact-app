@@ -99,8 +99,25 @@ const handleOnClick = () => {
   console.log("Div clicked!");
 };
 
-const ContactCard: React.FC<ContactCardProps> = ({ itemData, userFavoriteActive, onDelete }) => {
-  const userName = itemData ? `${itemData.first_name} ${itemData.last_name}` : 'Unknown';
+const ContactCard: React.FC<ContactCardProps> = ({
+  itemData,
+  userFavoriteActive,
+  onDelete,
+}) => {
+  const userName = itemData
+    ? `${itemData.first_name} ${itemData.last_name}`
+    : "Unknown";
+  const firstLetter = itemData && itemData.first_name.length > 0
+    ? `${itemData.first_name.charAt(0)}`
+    : "Unknown";
+  const userPhone =
+    itemData && itemData.phones.length > 0
+      ? `${itemData.phones[0].number} ${itemData.phones.length}`
+      : null;
+  const userPhoneMore =
+    itemData && itemData.phones.length > 0 && itemData.phones.length - 1 !== 0
+      ? `and ${itemData.phones.length - 1} more`
+      : null;
   return (
     <ContactCardComponent>
       <ContentWrapper>
@@ -109,11 +126,11 @@ const ContactCard: React.FC<ContactCardProps> = ({ itemData, userFavoriteActive,
             {userFavoriteActive ? <FavoriteIconActive /> : <FavoriteIcon />}
           </ContactActionButton>
           <ContactProfile>
-            <p>i</p>
+            <p>{firstLetter}</p>
           </ContactProfile>
           <div>
             <ContactName>{userName}</ContactName>
-            {/* <ContactPhone>{userPhoneNumber}</ContactPhone> */}
+            {userPhone && <ContactPhone>{userPhone} {userPhoneMore}</ContactPhone>}
           </div>
         </ContactContent>
         {/* <ContactActionButton color="rgb(243, 104, 25)"><StyledTrashIcon/></ContactActionButton> */}

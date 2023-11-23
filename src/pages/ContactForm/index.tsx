@@ -1,5 +1,5 @@
 import { Formik, Field, FieldArray, Form, ErrorMessage } from "formik";
-import { useMutation, ApolloError } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { ADD_CONTACT } from "../../query";
 import styled from "@emotion/styled";
 
@@ -94,7 +94,7 @@ const initialValues: Contact = {
 };
 
 const ContactForm = ({ contactForm = "Contact Form" }: ContactFormProps) => {
-  const [addContact, { loading, error, data }] = useMutation(ADD_CONTACT);
+  const [addContact] = useMutation(ADD_CONTACT);
 
   const handleSubmit = (values: Contact) => {
     const formData = {

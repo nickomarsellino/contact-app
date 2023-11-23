@@ -1,40 +1,102 @@
 // ContactList Component
 // --------------------------------------------------------
-import styled from "@emotion/styled";
-import { Contact } from "../../models";
-import { ContactCard } from "../../components";
+import { Contact, Phone } from "../../models";
+import {
+  ContactlistComponent,
+  ContactCardComponent,
+  ContentWrapper,
+  ContactContent,
+  ContactActionButton,
+  ContactProfile,
+  ContactName,
+  ContactPhone,
+  StyledTrashIcon
+} from "./styles";
+// import { ReactComponent as FavoriteIcon } from "../../assets/image/icon-fav.svg";
+import { ReactComponent as FavoriteIconActive } from "../../assets/image/icon-fav-active.svg";
 
 interface ContactListProps {
   listData: Array<Contact>;
   handleClickDelete: Function;
 }
 
-const ContactlistComponent = styled("div")`
-  display: grid;
-  grid-template-columns: repeat(2, calc(50% - 12px));
-  grid-template-rows: repeat(1, 100px);
-  gap: 16px;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, calc(50% - 12px));
-    grid-template-rows: repeat(1, 100px);
+const ContactList: React.FC<ContactListProps> = ({
+  listData,
+  handleClickDelete,
+}) => {
+  const firstLetter = (first_name: string) => {
+    const initialFirstName = first_name && first_name.length > 0
+    ? `${first_name.charAt(0)}`
+    : "?";
+    return `${initialFirstName}`;
   }
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(1, calc(100% - 12px));
-    grid-template-rows: repeat(1, 100px);
+  const handleGetName = (first_name: string, last_name: string) => {
+    const userName = first_name || last_name
+    ? `${first_name} ${last_name}`
+    : "Unknown";
+    return userName;
   }
-`;
 
+  const handleGetPhone = (phones: Array<Phone>) => {
+    const userPhone =
+    phones && phones.length > 0
+      ? `${phones[0].number} ${phones.length}`
+      : null;
+    return userPhone;
+  }
 
-const ContactList: React.FC<ContactListProps> = ({ listData, handleClickDelete }) => {
+  const handleGetMoreList = (phones: Array<Phone>) => {
+    const userPhoneMore =
+    phones && phones.length > 0 && phones.length - 1 !== 0
+      ? `and ${phones.length - 1} more`
+      : null;
+    return userPhoneMore;
+  }
+
   const handleDelete = (id: number) => {
     handleClickDelete(id);
-  }
+  };
+
+  const handleClickFavorite = (id: number) => {
+    handleClickDelete(id);
+  };
+
   return (
     <ContactlistComponent>
       <>
         {listData.map((item) => (
-          <ContactCard userFavoriteActive onDelete={() => handleDelete(item.id)} itemData={item}/>
+          <ContactCardComponent>
+            <ContentWrapper>
+              <ContactContent>
+                <ContactActionButton
+                  color="none"
+                  noHover
+                  onClick={() => handleClickFavorite(item.id)}
+                >
+                  {/* {userFavoriteActive ? ( */}
+                    <FavoriteIconActive />
+                  {/* // ) : (
+                  //   <FavoriteIcon />
+                  // )} */}
+                </ContactActionButton>
+                <ContactProfile>
+                  <p>{firstLetter(item.first_name)}</p>
+                </ContactProfile>
+                <div>
+                  <ContactName>{handleGetName(item.first_name, item.first_name)}</ContactName>
+                  {handleGetPhone(item.phones) && (
+                    <ContactPhone>
+                      {handleGetPhone(item.phones)} {handleGetMoreList(item.phones)}
+                    </ContactPhone>
+                  )}
+                </div>
+              </ContactContent>
+              {/* <ContactActionButton color="rgb(243, 104, 25)"><StyledTrashIcon/></ContactActionButton> */}
+              <ContactActionButton onClick={() => handleDelete(item.id)}>
+                <StyledTrashIcon />
+              </ContactActionButton>
+            </ContentWrapper>
+          </ContactCardComponent>
         ))}
       </>
     </ContactlistComponent>
