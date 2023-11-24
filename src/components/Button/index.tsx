@@ -8,6 +8,7 @@ interface ButtonProps {
   type?: string;
   textButton?: string;
   colorButton?: string;
+  disabled?: boolean;
   onClickButton?: MouseEventHandler<HTMLButtonElement>;
 }
 
@@ -39,11 +40,11 @@ const ButtonType = styled.button<ButtonProps>`
 
 const Button: React.FC<ButtonProps> = ({
   textButton,
-  colorButton,
+  disabled,
   type,
   onClickButton,
 }) => {
-  return <ButtonType onClick={onClickButton}>{textButton}</ButtonType>;
+  return <ButtonType disabled={disabled} onClick={onClickButton}>{textButton}</ButtonType>;
 };
 
 export default Button;
