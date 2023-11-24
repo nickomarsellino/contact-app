@@ -12,8 +12,6 @@ interface ContactListProps {
   contactList?: string;
 }
 
-
-
 const getFavoriteListFromStorage = () => {
   let data = localStorage.getItem('favoriteList');
   if(data) data = JSON.parse(data);
@@ -25,27 +23,25 @@ const saveFavoriteListToStorage = (data: number[]) => {
 }
 
 
-const getData = {
-  "whereFavoriteList": {
-    "id": {
-      "_in": getFavoriteListFromStorage()
-    }
-  },
-  "where": {
-    "id": {
-      "_nin": getFavoriteListFromStorage()
-    }
-  },
-  "order_by": [{created_at: "desc"}]
-}
-
-
 const ContactList = ({
   contactList = "contact-list-compnent",
 }: ContactListProps) => {
-
   const [storageFavoriteList, setStorageFavoriteList] = useState<number[]>([]);
-  const { loading, error, data } = useQuery(GET_LIST_CONTACT,{
+  const getData = {
+    "whereFavoriteList": {
+      "id": {
+        "_in": storageFavoriteList
+      }
+    },
+    "where": {
+      "id": {
+        "_nin": storageFavoriteList
+      }
+    },
+    "order_by": [{created_at: "desc"}]
+  }
+
+  const {loading, error, data, refetch} = useQuery(GET_LIST_CONTACT,{
     variables: { ...getData },
   });
   const [deleteContact] = useMutation(DELETE_CONTACT, {
@@ -59,11 +55,17 @@ const ContactList = ({
       const newData = data.filter(d => d !== id);
       saveFavoriteListToStorage(newData);
       setStorageFavoriteList(newData);
+      refetch({
+        variables: { ...getData },
+      });
       return
     }
     data.push(id);
     setStorageFavoriteList(data)
     saveFavoriteListToStorage(data);
+    refetch({
+      variables: { ...getData },
+    });
   }
 
   const onClickButton = () => {
@@ -106,7 +108,7 @@ const ContactList = ({
         Favorite Contact
         <ContactListComponent
           favoriteList={storageFavoriteList}
-          listData={data.contactFavorite}
+          listData={data.contactFavorite && data.contactFavorite}
           handleClickDelete={onClickDeleteContact}
           handleClickFavorite={onClickFavoriteContact}
         />
@@ -115,7 +117,7 @@ const ContactList = ({
         Regular Contact
         <ContactListComponent
           favoriteList={storageFavoriteList}
-          listData={data.contact}
+          listData={data.contact && data.contact}
           handleClickDelete={onClickDeleteContact}
           handleClickFavorite={onClickFavoriteContact}
         />
