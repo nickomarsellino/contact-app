@@ -5,7 +5,9 @@ import { GET_LIST_CONTACT, DELETE_CONTACT } from "../../query";
 import {
   Button,
   ContactList as ContactListComponent,
+  Pagination,
   InputSearch,
+  Text,
 } from "../../components";
 
 interface ContactListProps {
@@ -25,7 +27,7 @@ const saveFavoriteListToStorage = (data: number[]) => {
 };
 
 const getTotalPage = (totalData: number) => {
-  const calculate = totalData / limitDataPage
+  const calculate = totalData / limitDataPage;
   return Math.floor(calculate);
 };
 
@@ -107,10 +109,10 @@ const ContactList = ({
   const onClickNextPage = () => {
     const currentPagination = currentPage + 1;
     const currentOffset = currentPagination * limitDataPage;
-    if (currentPagination === totalPage){
+    if (currentPagination === totalPage) {
       setDisabledNextButton(true);
-    }
-    else {
+      setDisabledPrevButton(false);
+    } else {
       setDisabledPrevButton(false);
     }
     setCurrentPage(currentPagination);
@@ -120,15 +122,14 @@ const ContactList = ({
   const onClickBackPage = () => {
     const currentPagination = currentPage - 1;
     const currentOffset = offsetPage - limitDataPage;
-    if (currentPagination < 0 || currentPagination === 0){
+    if (currentPagination < 0 || currentPagination === 0) {
       setDisabledPrevButton(true);
       setDisabledNextButton(false);
-    }
-    else {
-      setCurrentPage(currentPagination);
-      setOffsetPage(currentOffset);
+    } else {
       setDisabledNextButton(false);
     }
+    setCurrentPage(currentPagination);
+    setOffsetPage(currentOffset);
   };
 
   useEffect(() => {
@@ -137,7 +138,7 @@ const ContactList = ({
 
   useEffect(() => {
     if (!loading && data) {
-      setTotalPage(getTotalPage(data.contact_aggregate.aggregate.count))
+      setTotalPage(getTotalPage(data.contact_aggregate.aggregate.count));
     }
   }, [loading, data]);
 
@@ -152,10 +153,19 @@ const ContactList = ({
       <Button textButton="Add Contact" onClickButton={onClickButton} />
       {/* <Button colorButton="red" textButton="Delete Contact"/> */}
       <InputSearch />
-      <Button disabled={disabledNextButton} textButton="Next" onClickButton={onClickNextPage} />
-      <Button disabled={disabledPrevButton} textButton="Prev" onClickButton={onClickBackPage} />
+      <Pagination />
+      <Button
+        disabled={disabledNextButton}
+        textButton="Next"
+        onClickButton={onClickNextPage}
+      />
+      <Button
+        disabled={disabledPrevButton}
+        textButton="Prev"
+        onClickButton={onClickBackPage}
+      />
       <div>
-        Favorite Contact
+        <Text>Favorite Contact</Text>
         <ContactListComponent
           favoriteList={storageFavoriteList}
           listData={data.contactFavorite && data.contactFavorite}
@@ -164,7 +174,7 @@ const ContactList = ({
         />
       </div>
       <div>
-        Regular Contact
+        <Text>Regular Contact</Text>
         <ContactListComponent
           favoriteList={storageFavoriteList}
           listData={data.contact && data.contact}
