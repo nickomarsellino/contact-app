@@ -41,7 +41,7 @@ const ContactList = ({
 
   // State Button Pagination
   const [disabledNextButton, setDisabledNextButton] = useState<boolean>(false);
-  const [disabledPrevButton, setDisabledPrevButton] = useState<boolean>(false);
+  const [disabledPrevButton, setDisabledPrevButton] = useState<boolean>(true);
 
   const getData = {
     whereFavoriteList: {
@@ -107,25 +107,27 @@ const ContactList = ({
   const onClickNextPage = () => {
     const currentPagination = currentPage + 1;
     const currentOffset = currentPagination * limitDataPage;
-    if (currentPage === totalPage){
+    if (currentPagination === totalPage){
       setDisabledNextButton(true);
     }
     else {
       setDisabledPrevButton(false);
-      setCurrentPage(currentPagination);
-      setOffsetPage(currentOffset);
     }
+    setCurrentPage(currentPagination);
+    setOffsetPage(currentOffset);
   };
 
   const onClickBackPage = () => {
     const currentPagination = currentPage - 1;
     const currentOffset = offsetPage - limitDataPage;
-    if (currentPagination < 0){
+    if (currentPagination < 0 || currentPagination === 0){
       setDisabledPrevButton(true);
+      setDisabledNextButton(false);
     }
     else {
       setCurrentPage(currentPagination);
       setOffsetPage(currentOffset);
+      setDisabledNextButton(false);
     }
   };
 
