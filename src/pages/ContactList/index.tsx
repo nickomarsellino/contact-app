@@ -12,6 +12,8 @@ interface ContactListProps {
   contactList?: string;
 }
 
+
+
 const getFavoriteListFromStorage = () => {
   let data = localStorage.getItem('favoriteList');
   if(data) data = JSON.parse(data);
@@ -22,12 +24,30 @@ const saveFavoriteListToStorage = (data: number[]) => {
   localStorage.setItem('favoriteList', JSON.stringify(data));
 }
 
+
+const getData = {
+  "whereFavoriteList": {
+    "id": {
+      "_in": getFavoriteListFromStorage()
+    }
+  },
+  "where": {
+    "id": {
+      "_nin": getFavoriteListFromStorage()
+    }
+  },
+  "order_by": [{created_at: "desc"}]
+}
+
+
 const ContactList = ({
   contactList = "contact-list-compnent",
 }: ContactListProps) => {
 
   const [storageFavoriteList, setStorageFavoriteList] = useState<number[]>([]);
-  const { loading, error, data } = useQuery(GET_LIST_CONTACT);
+  const { loading, error, data } = useQuery(GET_LIST_CONTACT,{
+    variables: { ...getData },
+  });
   const [deleteContact] = useMutation(DELETE_CONTACT, {
     refetchQueries: [GET_LIST_CONTACT],
   });
@@ -70,6 +90,9 @@ const ContactList = ({
     setStorageFavoriteList(getFavoriteListFromStorage());
   }, []);
 
+
+  console.log('data: ', data);
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
@@ -80,6 +103,16 @@ const ContactList = ({
       {/* <Button colorButton="red" textButton="Delete Contact"/> */}
       <InputSearch />
       <div>
+        Favorite Contact
+        <ContactListComponent
+          favoriteList={storageFavoriteList}
+          listData={data.contactFavorite}
+          handleClickDelete={onClickDeleteContact}
+          handleClickFavorite={onClickFavoriteContact}
+        />
+      </div>
+      <div>
+        Regular Contact
         <ContactListComponent
           favoriteList={storageFavoriteList}
           listData={data.contact}

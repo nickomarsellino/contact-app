@@ -86,7 +86,7 @@ const ContactList: React.FC<ContactListProps> = ({
                 </ContactProfile>
                 <div>
                   <ContactName>
-                    {handleGetName(item.first_name, item.first_name)}
+                    {handleGetName(item.first_name, item.last_name)}
                   </ContactName>
                   {handleGetPhone(item.phones) && (
                     <ContactPhone>
