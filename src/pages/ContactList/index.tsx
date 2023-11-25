@@ -104,7 +104,9 @@ const ContactList = ({
   const onClickDeleteContact = (id: number) => {
     deleteContact({ variables: { id: id } })
       .then(() => {
-        alert("Berhasil Delete Contact");
+        refetch({
+          variables: { ...getData },
+        });
       })
       .catch(() => {
         alert("Gagal Delete Contact");
