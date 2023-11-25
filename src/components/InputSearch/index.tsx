@@ -1,24 +1,84 @@
 // InputSearch Component
 // --------------------------------------------------------
-import {Input} from './styles'
-
+import { useState } from "react";
+import { Input, RadioButtonSection, SearchSection } from "./styles";
+import {
+  Button
+} from "../../components";
 interface InputSearchProps {
-  placeholder?: string;
-  onChange?: Function;
+  handleGetSearchValue?: () => void,
+  setValueSearch?: any
 }
 
 const InputSearch = ({
-  placeholder = "Search Contact",
-  onChange = () => {},
+  handleGetSearchValue,
+  setValueSearch,
 }: InputSearchProps) => {
+  const [placeholder, setPlaceholder] = useState<string>("Search Contact by ...");
+  const [selectedSearchBy, setSelectedSearchBy] = useState<string>("");
 
-  const handleInputChange = (event ?: any) => {
-    console.log("handleInputChange :", event.target.value);
+  const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if(event.target.value === "first_name"){
+      setPlaceholder('Search Contact by First Name');
+    } 
+    else if(event.target.value === "last_name"){
+      setPlaceholder('Search Contact by Last Name');
+    } else {
+      setPlaceholder('Search Contact by Phone Number');
+    }
+    setSelectedSearchBy(event.target.value); // Update the selected option state
+  };
+
+  const handleInputChange = (event?: any) => {
+    setValueSearch(event.target.value);
   };
 
   return (
-    <div style={{display: "flex"}}>
-      <Input id="test" type="text" placeholder={placeholder} autoComplete="off"  disabled={false} onChange={handleInputChange}/>
+    <div>
+      <p>Search By: </p>
+      <RadioButtonSection>
+        <label>
+          <input
+            type="radio"
+            name="option"
+            value="first_name"
+            checked={selectedSearchBy === "first_name"}
+            onChange={handleOptionChange}
+          />
+          First Name
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="option"
+            value="last_name"
+            checked={selectedSearchBy === "last_name"}
+            onChange={handleOptionChange}
+          />
+          Last Name
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="option"
+            value="phones"
+            checked={selectedSearchBy === "phones"}
+            onChange={handleOptionChange}
+          />
+          Phone Number
+        </label>
+      </RadioButtonSection>
+      <SearchSection>
+        <Input
+          id="test"
+          type="text"
+          placeholder={placeholder}
+          autoComplete="off"
+          disabled={selectedSearchBy === ''}
+          onChange={handleInputChange}
+        />
+        <Button disabled={selectedSearchBy === ''} textButton="Search" onClickButton={handleGetSearchValue}/>
+      </SearchSection>
     </div>
   );
 };

@@ -35,14 +35,12 @@ const saveFavoriteListToStorage = (data: number[]) => {
 };
 
 const getTotalPage = (totalData: number, totalFavorite: number) => {
-  const calculation = totalData - totalFavorite
+  const calculation = totalData - totalFavorite;
   const calculate = calculation / limitDataPage;
   return Math.floor(calculate);
 };
 
-const ContactList = ({
-  contactList = "Contact Apps",
-}: ContactListProps) => {
+const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
   const [storageFavoriteList, setStorageFavoriteList] = useState<number[]>([]);
 
   // Handle Pagination
@@ -53,6 +51,9 @@ const ContactList = ({
   // State Button Pagination
   const [disabledNextButton, setDisabledNextButton] = useState<boolean>(false);
   const [disabledPrevButton, setDisabledPrevButton] = useState<boolean>(true);
+
+  // Handle Search
+  const [valueSearch, setValueSearch] = useState<string>("");
 
   const getData = {
     whereFavoriteList: {
@@ -103,7 +104,7 @@ const ContactList = ({
 
   const onClickDetail = (id: number) => {
     window.location.href = `/contact/edit/${id}`;
-  }
+  };
 
   const onClickDeleteContact = (id: number) => {
     deleteContact({ variables: { id: id } })
@@ -147,6 +148,10 @@ const ContactList = ({
     setOffsetPage(currentOffset);
   };
 
+  const handleGetSearchValue = () => {
+    console.log("data: ", valueSearch);
+  };
+
   useEffect(() => {
     setStorageFavoriteList(getFavoriteListFromStorage());
   }, []);
@@ -155,8 +160,11 @@ const ContactList = ({
     if (!loading && data) {
       const totalFavorite = getCountFavoriteListFromStorage();
       const totalDataQuery = data.contact_aggregate.aggregate.count;
-      const total = getTotalPage(data.contact_aggregate.aggregate.count, totalFavorite);
-      if ((totalDataQuery - totalFavorite) < limitDataPage) {
+      const total = getTotalPage(
+        data.contact_aggregate.aggregate.count,
+        totalFavorite
+      );
+      if (totalDataQuery - totalFavorite < limitDataPage) {
         setDisabledNextButton(true);
         setTotalPage(1);
       } else {
@@ -165,19 +173,16 @@ const ContactList = ({
     }
   }, [loading, data]);
 
-  console.log("data: ", data);
-
   // if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
   return (
     <div>
       <LogoSection>
-          <Logo />
-        </LogoSection>
-
-        <Text>{contactList}</Text>
-      <InputSearch />
+        <Logo />
+      </LogoSection>
+      <InputSearch setValueSearch={setValueSearch} handleGetSearchValue={handleGetSearchValue}/>
+      <Text>{contactList}</Text>
       <SectionActionButton>
         <Button textButton="Add New Contact" onClickButton={onClickButton} />
         <Pagination
@@ -199,17 +204,19 @@ const ContactList = ({
         textButton="Prev"
         onClickButton={onClickBackPage}
       /> */}
-      <div>
-        <Text>Favorite Contact</Text>
-        <ContactListComponent
-          isLoading={loading}
-          favoriteList={storageFavoriteList}
-          listData={!loading && data.contactFavorite && data.contactFavorite}
-          handleClickDelete={onClickDeleteContact}
-          handleClickFavorite={onClickFavoriteContact}
-          onClickDetail={onClickDetail}
-        />
-      </div>
+      {!loading && data.contactFavorite.length > 0 && (
+        <div>
+          <Text>Favorite Contact</Text>
+          <ContactListComponent
+            isLoading={loading}
+            favoriteList={storageFavoriteList}
+            listData={!loading && data.contactFavorite && data.contactFavorite}
+            handleClickDelete={onClickDeleteContact}
+            handleClickFavorite={onClickFavoriteContact}
+            onClickDetail={onClickDetail}
+          />
+        </div>
+      )}
       <div>
         <Text>Regular Contact</Text>
         <ContactListComponent

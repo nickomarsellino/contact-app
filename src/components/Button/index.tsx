@@ -36,9 +36,11 @@ const ButtonType = styled.button<ButtonProps>`
   border-radius: 4px;
   margin-bottom: 8px;
   cursor: pointer;
-
+ 
   &:disabled{
-    background-color: black;
+    cursor: initial;
+    color: black;
+    background-color: rgb(228, 235, 245);
   }
 `;
 
