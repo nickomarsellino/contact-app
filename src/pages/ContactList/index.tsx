@@ -24,12 +24,19 @@ const getFavoriteListFromStorage = () => {
   return (data as unknown as number[]) || [];
 };
 
+const getCountFavoriteListFromStorage = () => {
+  let data = localStorage.getItem("favoriteList");
+  if (data) data = JSON.parse(data);
+  return (data?.length as unknown as number) || 0;
+};
+
 const saveFavoriteListToStorage = (data: number[]) => {
   localStorage.setItem("favoriteList", JSON.stringify(data));
 };
 
-const getTotalPage = (totalData: number) => {
-  const calculate = totalData / limitDataPage;
+const getTotalPage = (totalData: number, totalFavorite: number) => {
+  const calculation = totalData - totalFavorite
+  const calculate = calculation / limitDataPage;
   return Math.floor(calculate);
 };
 
@@ -109,7 +116,6 @@ const ContactList = ({
   };
 
   const onClickNextPage = () => {
-    console.log("onClickNextPage: ");
     const currentPagination = currentPage + 1;
     const currentOffset = currentPagination * limitDataPage;
     if (currentPagination === totalPage) {
@@ -123,7 +129,6 @@ const ContactList = ({
   };
 
   const onClickBackPage = () => {
-    console.log("onClickBackPage: ");
     const currentPagination = currentPage - 1;
     const currentOffset = offsetPage - limitDataPage;
     if (currentPagination < 0 || currentPagination === 0) {
@@ -142,8 +147,10 @@ const ContactList = ({
 
   useEffect(() => {
     if (!loading && data) {
-      const total = getTotalPage(data.contact_aggregate.aggregate.count);
-      if (data.contact_aggregate.aggregate.count < limitDataPage) {
+      const totalFavorite = getCountFavoriteListFromStorage();
+      const totalDataQuery = data.contact_aggregate.aggregate.count;
+      const total = getTotalPage(data.contact_aggregate.aggregate.count, totalFavorite);
+      if ((totalDataQuery - totalFavorite) < limitDataPage) {
         setDisabledNextButton(true);
         setTotalPage(1);
       } else {
