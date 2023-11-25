@@ -8,16 +8,19 @@ import {
 interface InputSearchProps {
   handleGetSearchValue?: () => void,
   setValueSearch?: any
+  setValueCategorySearch?: any
 }
 
 const InputSearch = ({
   handleGetSearchValue,
   setValueSearch,
+  setValueCategorySearch,
 }: InputSearchProps) => {
   const [placeholder, setPlaceholder] = useState<string>("Search Contact by ...");
   const [selectedSearchBy, setSelectedSearchBy] = useState<string>("");
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValueCategorySearch(event.target.value);
     if(event.target.value === "first_name"){
       setPlaceholder('Search Contact by First Name');
     } 

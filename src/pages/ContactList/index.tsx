@@ -54,6 +54,7 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
 
   // Handle Search
   const [valueSearch, setValueSearch] = useState<string>("");
+  const [valueCategorySearch, setValueCategorySearch] = useState<string>("");
 
   const getData = {
     whereFavoriteList: {
@@ -149,7 +150,8 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
   };
 
   const handleGetSearchValue = () => {
-    console.log("data: ", valueSearch);
+    console.log("valueSearch: ", valueSearch);
+    console.log("valueCategorySearch: ", valueCategorySearch);
   };
 
   useEffect(() => {
@@ -181,7 +183,7 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
       <LogoSection>
         <Logo />
       </LogoSection>
-      <InputSearch setValueSearch={setValueSearch} handleGetSearchValue={handleGetSearchValue}/>
+      <InputSearch setValueSearch={setValueSearch} setValueCategorySearch={setValueCategorySearch} handleGetSearchValue={handleGetSearchValue}/>
       <Text>{contactList}</Text>
       <SectionActionButton>
         <Button textButton="Add New Contact" onClickButton={onClickButton} />
