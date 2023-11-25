@@ -49,6 +49,7 @@ export const ContactFormComponent = styled("div")`
   transition: transform 0.3s ease;
   max-width: 50%;
   margin: auto;
+  margin-top: 88px;
   @media (max-width: 1024px) {
     max-width: initial;
   }
@@ -128,10 +129,13 @@ export const IconButton = styled.button`
   }
 `;
 
-
 export const ErrorFromQuery = styled.p`
   color: rgb(193, 38, 74);
   font-weight: bold;
   font-size: 14px;
   margin-bottom: 4px;
+`;
+
+export const LogoSection = styled("div")`
+  text-align: center;
 `;

@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Formik, Field, FieldArray, Form, ErrorMessage } from "formik";
 import { useMutation } from "@apollo/client";
 import { ADD_CONTACT } from "../../query";
+import { Text } from "../../components";
 import { ReactComponent as IconAdd } from "../../assets/image/add.svg";
 import { ReactComponent as IconTrash } from "../../assets/image/trash.svg";
+import { ReactComponent as Logo } from "../../assets/image/tokopedia-logo.svg";
 
 import {
   Input,
@@ -14,6 +16,7 @@ import {
   Button,
   IconButton,
   ErrorFromQuery,
+  LogoSection
 } from "./styles";
 
 interface ContactFormProps {
@@ -31,7 +34,7 @@ const initialValues: Contact = {
   phones: [],
 };
 
-const ContactForm = ({ contactForm = "Contact Form" }: ContactFormProps) => {
+const ContactForm = ({ contactForm = "Contact App Form" }: ContactFormProps) => {
   const [errorFromQuery, setErrorFromQuery] = useState<string>("");
   const [addContact] = useMutation(ADD_CONTACT);
 
@@ -57,9 +60,11 @@ const ContactForm = ({ contactForm = "Contact Form" }: ContactFormProps) => {
 
   return (
     <div>
-      {contactForm}
       <ContactFormComponent>
-
+        <LogoSection>
+          <Logo />
+        </LogoSection>
+        <Text>{contactForm}</Text>
         <Formik
           initialValues={initialValues}
           validationSchema={null}

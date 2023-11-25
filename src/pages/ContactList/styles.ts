@@ -6,3 +6,10 @@ export const SectionActionButton = styled("div")`
   justify-content: space-between;
   align-items: center;
 `;
+
+export const LogoSection = styled("div")`
+  text-align: center;
+  margin-top: 24px;
+  margin-bottom: 24px;
+`;
+

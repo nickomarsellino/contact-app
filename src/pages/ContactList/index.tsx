@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_LIST_CONTACT, DELETE_CONTACT } from "../../query";
-import { SectionActionButton } from "./styles";
+import { SectionActionButton, LogoSection } from "./styles";
+import { ReactComponent as Logo } from "../../assets/image/tokopedia-logo.svg";
 
 import {
   Button,
@@ -33,7 +34,7 @@ const getTotalPage = (totalData: number) => {
 };
 
 const ContactList = ({
-  contactList = "contact-list-compnent",
+  contactList = "Contact Apps",
 }: ContactListProps) => {
   const [storageFavoriteList, setStorageFavoriteList] = useState<number[]>([]);
 
@@ -158,10 +159,14 @@ const ContactList = ({
 
   return (
     <div>
-      {contactList}
+      <LogoSection>
+          <Logo />
+        </LogoSection>
+
+        <Text>{contactList}</Text>
       <InputSearch />
       <SectionActionButton>
-        <Button textButton="Add Contact" onClickButton={onClickButton} />
+        <Button textButton="Add New Contact" onClickButton={onClickButton} />
         <Pagination
           currentPage={currentPage}
           totalPage={totalPage}
