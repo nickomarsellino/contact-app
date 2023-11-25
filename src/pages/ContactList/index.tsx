@@ -107,6 +107,7 @@ const ContactList = ({
   };
 
   const onClickNextPage = () => {
+    console.log("onClickNextPage: ");
     const currentPagination = currentPage + 1;
     const currentOffset = currentPagination * limitDataPage;
     if (currentPagination === totalPage) {
@@ -120,6 +121,7 @@ const ContactList = ({
   };
 
   const onClickBackPage = () => {
+    console.log("onClickBackPage: ");
     const currentPagination = currentPage - 1;
     const currentOffset = offsetPage - limitDataPage;
     if (currentPagination < 0 || currentPagination === 0) {
@@ -138,7 +140,13 @@ const ContactList = ({
 
   useEffect(() => {
     if (!loading && data) {
-      setTotalPage(getTotalPage(data.contact_aggregate.aggregate.count));
+      const total = getTotalPage(data.contact_aggregate.aggregate.count)
+      if(data.contact_aggregate.aggregate.count < limitDataPage){
+        setDisabledNextButton(true);
+        setTotalPage(1);
+      }else {
+        setTotalPage(total);
+      }
     }
   }, [loading, data]);
 
@@ -151,10 +159,16 @@ const ContactList = ({
     <div>
       {contactList}
       <Button textButton="Add Contact" onClickButton={onClickButton} />
-      {/* <Button colorButton="red" textButton="Delete Contact"/> */}
       <InputSearch />
-      <Pagination />
-      <Button
+      <Pagination
+        currentPage={currentPage}
+        totalPage={totalPage}
+        disableNextButton={disabledNextButton}
+        disablePrevButton={disabledPrevButton}
+        handleClickNext={onClickNextPage}
+        handleClickPrev={onClickBackPage}
+      />
+      {/* <Button
         disabled={disabledNextButton}
         textButton="Next"
         onClickButton={onClickNextPage}
@@ -163,7 +177,7 @@ const ContactList = ({
         disabled={disabledPrevButton}
         textButton="Prev"
         onClickButton={onClickBackPage}
-      />
+      /> */}
       <div>
         <Text>Favorite Contact</Text>
         <ContactListComponent

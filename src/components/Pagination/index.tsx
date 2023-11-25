@@ -1,27 +1,37 @@
 // Pagination Component
 // --------------------------------------------------------
-import { PaginationActionButton } from "./styles";
+import { PaginationActionButton, PaginationSection, LabelPage } from "./styles";
 import { ReactComponent as ArrowLeft } from "../../assets/image/arrow-left.svg";
 import { ReactComponent as ArrowRight } from "../../assets/image/arrow-right.svg";
 
 interface PaginationProps {
-  handleClickDelete?: (id: number) => void;
-  handleClickFavorite?: (id: number) => void;
+  totalPage?: number;
+  currentPage?: number;
+  disableNextButton?: boolean;
+  disablePrevButton?: boolean;
+  handleClickNext?: () => void;
+  handleClickPrev?: () => void;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
-  handleClickDelete,
-  handleClickFavorite,
+  totalPage,
+  currentPage,
+  disableNextButton,
+  disablePrevButton,
+  handleClickNext,
+  handleClickPrev,
 }) => {
   return (
-    <>
-      <PaginationActionButton>
+    <PaginationSection>
+      {/* <LabelPage>{`${(currentPage && currentPage === 0) ? 1 : currentPage && currentPage + 1} of ${totalPage && totalPage + 1} Page`}</LabelPage> */}
+      <LabelPage>{`${currentPage !== undefined ? currentPage + 1 : 1} of ${totalPage && totalPage + 1} Page`}</LabelPage>
+      <PaginationActionButton disabled={disablePrevButton} className={`${disablePrevButton && 'disabled'} prev-button`} onClick={handleClickPrev}>
         <ArrowLeft />
       </PaginationActionButton>
-      <PaginationActionButton>
+      <PaginationActionButton disabled={disableNextButton} className={`${disableNextButton && 'disabled'} next-button`} onClick={handleClickNext}>
         <ArrowRight />
       </PaginationActionButton>
-    </>
+    </PaginationSection>
   );
 };
 
