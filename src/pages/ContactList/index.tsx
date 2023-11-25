@@ -180,13 +180,13 @@ const ContactList = ({
         disabled={disabledPrevButton}
         textButton="Prev"
         onClickButton={onClickBackPage}
-      /> */} 
+      /> */}
       <div>
         <Text>Favorite Contact</Text>
         <ContactListComponent
           isLoading={loading}
           favoriteList={storageFavoriteList}
-          listData={(!loading && data.contactFavorite) && data.contactFavorite}
+          listData={!loading && data.contactFavorite && data.contactFavorite}
           handleClickDelete={onClickDeleteContact}
           handleClickFavorite={onClickFavoriteContact}
         />
@@ -196,11 +196,19 @@ const ContactList = ({
         <ContactListComponent
           isLoading={loading}
           favoriteList={storageFavoriteList}
-          listData={(!loading && data.contact) && data.contact}
+          listData={!loading && data.contact && data.contact}
           handleClickDelete={onClickDeleteContact}
           handleClickFavorite={onClickFavoriteContact}
         />
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPage={totalPage}
+        disableNextButton={disabledNextButton}
+        disablePrevButton={disabledPrevButton}
+        handleClickNext={onClickNextPage}
+        handleClickPrev={onClickBackPage}
+      />
     </div>
   );
 };

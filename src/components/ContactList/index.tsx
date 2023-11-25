@@ -99,7 +99,7 @@ const ContactList: React.FC<ContactListProps> = ({
                     <ContactProfile>
                       <p>{firstLetter(item.first_name)}</p>
                     </ContactProfile>
-                    <div>
+                    <div style={{paddingRight: '4px'}}>
                       <ContactName>
                         {handleGetName(item.first_name, item.last_name)}
                       </ContactName>

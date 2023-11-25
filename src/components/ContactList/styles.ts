@@ -56,6 +56,8 @@ export const ContactProfile = styled("div")`
   color: white;
   width: 48px;
   height: 48px;
+  min-width: 48px;
+  min-height: 48px;
   background-color: rgb(0, 170, 91);
   text-transform: capitalize;
   font-size: 32px;
