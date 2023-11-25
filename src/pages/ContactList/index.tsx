@@ -153,7 +153,7 @@ const ContactList = ({
 
   console.log("data: ", data);
 
-  if (loading) return <p>Loading...</p>;
+  // if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
   return (
@@ -180,12 +180,13 @@ const ContactList = ({
         disabled={disabledPrevButton}
         textButton="Prev"
         onClickButton={onClickBackPage}
-      /> */}
+      /> */} 
       <div>
         <Text>Favorite Contact</Text>
         <ContactListComponent
+          isLoading={loading}
           favoriteList={storageFavoriteList}
-          listData={data.contactFavorite && data.contactFavorite}
+          listData={(!loading && data.contactFavorite) && data.contactFavorite}
           handleClickDelete={onClickDeleteContact}
           handleClickFavorite={onClickFavoriteContact}
         />
@@ -193,8 +194,9 @@ const ContactList = ({
       <div>
         <Text>Regular Contact</Text>
         <ContactListComponent
+          isLoading={loading}
           favoriteList={storageFavoriteList}
-          listData={data.contact && data.contact}
+          listData={(!loading && data.contact) && data.contact}
           handleClickDelete={onClickDeleteContact}
           handleClickFavorite={onClickFavoriteContact}
         />

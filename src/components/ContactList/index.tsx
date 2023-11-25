@@ -1,6 +1,7 @@
 // ContactList Component
 // --------------------------------------------------------
 import { Contact, Phone } from "../../models";
+import { Skeleton } from "../../components";
 import {
   ContactlistComponent,
   ContactCardComponent,
@@ -16,6 +17,7 @@ import { ReactComponent as FavoriteIcon } from "../../assets/image/icon-fav.svg"
 import { ReactComponent as FavoriteIconActive } from "../../assets/image/icon-fav-active.svg";
 
 interface ContactListProps {
+  isLoading: boolean;
   listData: Array<Contact>;
   favoriteList: number[];
   handleClickDelete: (id: number) => void;
@@ -23,11 +25,14 @@ interface ContactListProps {
 }
 
 const ContactList: React.FC<ContactListProps> = ({
+  isLoading,
   listData,
   favoriteList,
   handleClickDelete,
   handleClickFavorite,
 }) => {
+  const skeletonData = [0, 1, 2, 3, 4];
+
   const firstLetter = (first_name: string) => {
     const initialFirstName =
       first_name && first_name.length > 0 ? `${first_name.charAt(0)}` : "?";
@@ -65,44 +70,58 @@ const ContactList: React.FC<ContactListProps> = ({
   return (
     <ContactlistComponent>
       <>
-        {listData.map((item, index) => (
-          <ContactCardComponent key={index}>
-            <ContentWrapper>
-              <ContactContent>
-                <ContactActionButton
-                  color="none"
-                  noHover
-                  onClick={() => handleClickFavorite(item.id)}
-                >
-                  {handleFavoriteIcon(item.id)}
-                  {/* {userFavoriteActive ? ( */}
-                  {/* <FavoriteIconActive /> */}
-                  {/* // ) : (
+        {isLoading ? (
+          <>
+            {skeletonData.map((item, index) => (
+              <ContactCardComponent key={index}>
+                <Skeleton />
+              </ContactCardComponent>
+            ))}
+          </>
+        ) : (
+          <>
+            {listData.map((item, index) => (
+              <ContactCardComponent key={index}>
+                <ContentWrapper>
+                  <ContactContent>
+                    <ContactActionButton
+                      color="none"
+                      noHover
+                      onClick={() => handleClickFavorite(item.id)}
+                    >
+                      {handleFavoriteIcon(item.id)}
+                      {/* {userFavoriteActive ? ( */}
+                      {/* <FavoriteIconActive /> */}
+                      {/* // ) : (
                     <FavoriteIcon />
                   // )} */}
-                </ContactActionButton>
-                <ContactProfile>
-                  <p>{firstLetter(item.first_name)}</p>
-                </ContactProfile>
-                <div>
-                  <ContactName>
-                    {handleGetName(item.first_name, item.last_name)}
-                  </ContactName>
-                  {handleGetPhone(item.phones) && (
-                    <ContactPhone>
-                      {handleGetPhone(item.phones)}{" "}
-                      {handleGetMoreList(item.phones)}
-                    </ContactPhone>
-                  )}
-                </div>
-              </ContactContent>
-              {/* <ContactActionButton color="rgb(243, 104, 25)"><StyledTrashIcon/></ContactActionButton> */}
-              <ContactActionButton onClick={() => handleClickDelete(item.id)}>
-                <StyledTrashIcon />
-              </ContactActionButton>
-            </ContentWrapper>
-          </ContactCardComponent>
-        ))}
+                    </ContactActionButton>
+                    <ContactProfile>
+                      <p>{firstLetter(item.first_name)}</p>
+                    </ContactProfile>
+                    <div>
+                      <ContactName>
+                        {handleGetName(item.first_name, item.last_name)}
+                      </ContactName>
+                      {handleGetPhone(item.phones) && (
+                        <ContactPhone>
+                          {handleGetPhone(item.phones)}{" "}
+                          {handleGetMoreList(item.phones)}
+                        </ContactPhone>
+                      )}
+                    </div>
+                  </ContactContent>
+                  {/* <ContactActionButton color="rgb(243, 104, 25)"><StyledTrashIcon/></ContactActionButton> */}
+                  <ContactActionButton
+                    onClick={() => handleClickDelete(item.id)}
+                  >
+                    <StyledTrashIcon />
+                  </ContactActionButton>
+                </ContentWrapper>
+              </ContactCardComponent>
+            ))}
+          </>
+        )}
       </>
     </ContactlistComponent>
   );
