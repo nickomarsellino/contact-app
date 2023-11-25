@@ -77,6 +77,13 @@ export const Button = styled.button`
   margin-top: 16px;
   margin-bottom: 8px;
   cursor: pointer;
+
+
+  &:disabled {
+    cursor: initial;
+    color: black;
+    background-color: rgb(228, 235, 245);
+  }
 `;
 
 export const IconButton = styled.button`

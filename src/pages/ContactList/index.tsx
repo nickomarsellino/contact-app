@@ -101,6 +101,10 @@ const ContactList = ({
     window.location.href = "/contact/add";
   };
 
+  const onClickDetail = (id: number) => {
+    window.location.href = `/contact/edit/${id}`;
+  }
+
   const onClickDeleteContact = (id: number) => {
     deleteContact({ variables: { id: id } })
       .then(() => {
@@ -203,6 +207,7 @@ const ContactList = ({
           listData={!loading && data.contactFavorite && data.contactFavorite}
           handleClickDelete={onClickDeleteContact}
           handleClickFavorite={onClickFavoriteContact}
+          onClickDetail={onClickDetail}
         />
       </div>
       <div>
@@ -213,6 +218,7 @@ const ContactList = ({
           listData={!loading && data.contact && data.contact}
           handleClickDelete={onClickDeleteContact}
           handleClickFavorite={onClickFavoriteContact}
+          onClickDetail={onClickDetail}
         />
       </div>
       <Pagination

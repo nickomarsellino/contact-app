@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { Phone } from "../../models";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Formik, Field, FieldArray, Form, ErrorMessage } from "formik";
-import { useMutation } from "@apollo/client";
-import { ADD_CONTACT } from "../../query";
+import { useMutation, useQuery } from "@apollo/client";
+import { ADD_CONTACT, GET_DETAIL_CONTACT } from "../../query";
 import { Text } from "../../components";
 import { ReactComponent as IconAdd } from "../../assets/image/add.svg";
 import { ReactComponent as IconTrash } from "../../assets/image/trash.svg";
@@ -16,16 +18,16 @@ import {
   Button,
   IconButton,
   ErrorFromQuery,
-  LogoSection
+  LogoSection,
 } from "./styles";
 
-interface ContactFormProps {
-  contactForm?: string;
-}
+// interface ContactFormProps {
+//   contactForm?: string;
+// }
 interface Contact {
   first_name: string;
   last_name: string;
-  phones: string[];
+  phones: Array<Phone>;
 }
 
 const initialValues: Contact = {
@@ -34,9 +36,21 @@ const initialValues: Contact = {
   phones: [],
 };
 
-const ContactForm = ({ contactForm = "Contact App Form" }: ContactFormProps) => {
+// const ContactForm = ({ contactForm = "Contact App Form" }: ContactFormProps) => {
+const ContactForm = (props: any) => {
+  const [titlePage, setTitlePage] = useState<string>("Add New Contact Form");
+  const [formValues, setFormValues] = useState(initialValues);
+  const [disableAllForm, setDisableAllForm] = useState<boolean>(false);
+
+  const { pageProps } = props;
+  const { id } = useParams();
   const [errorFromQuery, setErrorFromQuery] = useState<string>("");
   const [addContact] = useMutation(ADD_CONTACT);
+
+  const { loading, data } = useQuery(GET_DETAIL_CONTACT, {
+    variables: { id: id },
+    skip: !id,
+  });
 
   const handleSubmit = (values: Contact) => {
     const formData = {
@@ -55,8 +69,32 @@ const ContactForm = ({ contactForm = "Contact App Form" }: ContactFormProps) => 
         }
         console.log(error.graphQLErrors[0].message);
       });
-    console.log("formData: ", formData);
   };
+
+  // useEffect(() => {
+  //   if(pageProps && pageProps.type === 'edit'){
+  //     refetch(({ variables: { id: id } }))
+  //     console.log('data: ', data);
+  //   }
+  // }, []);
+
+  useEffect(() => {
+    if (!loading && data) {
+      if (pageProps && pageProps.type === "edit") {
+        setTitlePage("Detail Contact");
+        setDisableAllForm(true);
+        setFormValues({
+          first_name: data.contact_by_pk.first_name || "",
+          last_name: data.contact_by_pk.last_name || "",
+          phones: data.contact_by_pk.phones || Array<Phone>,
+        });
+      }
+    }
+  }, [loading, data, pageProps]);
+
+  // useEffect(() => {
+
+  // }, []);
 
   return (
     <div>
@@ -64,9 +102,10 @@ const ContactForm = ({ contactForm = "Contact App Form" }: ContactFormProps) => 
         <LogoSection>
           <Logo />
         </LogoSection>
-        <Text>{contactForm}</Text>
+        <Text>{titlePage}</Text>
         <Formik
-          initialValues={initialValues}
+          enableReinitialize
+          initialValues={formValues}
           validationSchema={null}
           onSubmit={handleSubmit}
         >
@@ -75,6 +114,7 @@ const ContactForm = ({ contactForm = "Contact App Form" }: ContactFormProps) => 
               <Input>
                 <Label htmlFor="first_name">First Name</Label>
                 <Field
+                  disabled={disableAllForm}
                   id="first_name"
                   name="first_name"
                   placeholder="First Name"
@@ -85,6 +125,7 @@ const ContactForm = ({ contactForm = "Contact App Form" }: ContactFormProps) => 
               <Input>
                 <Label htmlFor="last_name">Last Name</Label>
                 <Field
+                  disabled={disableAllForm}
                   id="last_name"
                   name="last_name"
                   placeholder="Last Name"
@@ -102,6 +143,7 @@ const ContactForm = ({ contactForm = "Contact App Form" }: ContactFormProps) => 
                           {values.phones.map((phone, index) => (
                             <MultiplePhoneInput key={index}>
                               <IconButton
+                                disabled={disableAllForm}
                                 className="bg-green"
                                 type="button"
                                 onClick={() => push("")}
@@ -110,11 +152,14 @@ const ContactForm = ({ contactForm = "Contact App Form" }: ContactFormProps) => 
                               </IconButton>
                               <Input className="phones">
                                 <Field
+                                  disabled={disableAllForm}
+                                  value={phone.number}
                                   name={`phones.${index}`}
                                   placeholder="Phone Number"
                                 />
                               </Input>
                               <IconButton
+                                disabled={disableAllForm}
                                 className="bg-red"
                                 type="button"
                                 onClick={() => remove(index)}
@@ -129,6 +174,7 @@ const ContactForm = ({ contactForm = "Contact App Form" }: ContactFormProps) => 
                         //   Add Phone
                         // </button>
                         <IconButton
+                          disabled={disableAllForm}
                           className="bg-green"
                           type="button"
                           onClick={() => push("")}
@@ -144,9 +190,11 @@ const ContactForm = ({ contactForm = "Contact App Form" }: ContactFormProps) => 
               {errorFromQuery && (
                 <ErrorFromQuery>{errorFromQuery}</ErrorFromQuery>
               )}
-              <ButtonSection>
-                <Button type="submit">Submit</Button>
-              </ButtonSection>
+              {!disableAllForm && (
+                <ButtonSection>
+                  <Button type="submit">Submit</Button>
+                </ButtonSection>
+              )}
             </Form>
           )}
         </Formik>

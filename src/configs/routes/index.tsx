@@ -13,6 +13,19 @@ const AppRoutes = [
     component: ContactForm,
     exact: true,
   },
+  {
+    id: 1,
+    path: "/contact/edit/:id",
+    // component: ContactForm,
+    exact: true,
+    component: (p: any) => {
+      const pageProps = {
+        type: 'edit',
+      };
+      const props = { ...p, pageProps };
+      return <ContactForm {...props} />;
+    },
+  },
 ];
 
 export default AppRoutes;

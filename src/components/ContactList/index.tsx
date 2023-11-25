@@ -20,6 +20,7 @@ interface ContactListProps {
   isLoading: boolean;
   listData: Array<Contact>;
   favoriteList: number[];
+  onClickDetail: (id: number) => void;
   handleClickDelete: (id: number) => void;
   handleClickFavorite: (id: number) => void;
 }
@@ -28,6 +29,7 @@ const ContactList: React.FC<ContactListProps> = ({
   isLoading,
   listData,
   favoriteList,
+  onClickDetail,
   handleClickDelete,
   handleClickFavorite,
 }) => {
@@ -96,10 +98,13 @@ const ContactList: React.FC<ContactListProps> = ({
                     <FavoriteIcon />
                   // )} */}
                     </ContactActionButton>
-                    <ContactProfile>
+                    <ContactProfile onClick={() => onClickDetail(item.id)}>
                       <p>{firstLetter(item.first_name)}</p>
                     </ContactProfile>
-                    <div style={{paddingRight: '4px'}}>
+                    <div
+                      style={{ paddingRight: "4px" }}
+                      onClick={() => onClickDetail(item.id)}
+                    >
                       <ContactName>
                         {handleGetName(item.first_name, item.last_name)}
                       </ContactName>
