@@ -69,7 +69,6 @@ const ContactList: React.FC<ContactListProps> = ({
     return <FavoriteIcon />;
   };
 
-  console.log('listData: ', listData);
   return (
     <ContactlistComponent>
       <>

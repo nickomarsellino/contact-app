@@ -76,7 +76,6 @@ const ContactForm = (props: any) => {
         if (error.graphQLErrors[0].message) {
           setErrorFromQuery(error.graphQLErrors[0].message);
         }
-        console.log(error.graphQLErrors[0].message);
       });
   };
 

@@ -64,7 +64,6 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
   const [valueCategorySearch, setValueCategorySearch] = useState<string>("");
 
   const restructuredDataSearch = (data: any) => {
-    console.log("@@@->> data: ", data);
     const restructuredData = data.contact.map(
       (contact: {
         contact: { id: any; first_name: any; last_name: any; phones: any[] };
@@ -85,8 +84,6 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
   };
 
   const getDataBySearchCategory = (value: string) => {
-    console.log("getDataBySearchCategory: ", valueCategorySearch);
-
     if(valueCategorySearch === "first_name"){
       const query = {
         where: {
@@ -249,7 +246,6 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
 
   useEffect(() => {
     if (!loading && data) {
-      console.log("data: ", data);
       setDataContact(data.contact);
       setDataContactFavorite(data.contactFavorite);
       const totalFavorite = getCountFavoriteListFromStorage();
