@@ -47,7 +47,7 @@ const ContactForm = ({ contactForm = "Contact App Form" }: ContactFormProps) => 
     };
     addContact({ variables: { ...formData } })
       .then(() => {
-        alert("Berhasil Add Contact");
+        window.location.href = "/";
       })
       .catch((error) => {
         if (error.graphQLErrors[0].message) {
