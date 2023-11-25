@@ -290,7 +290,7 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
   if (error) return <p>Error : {error.message}</p>;
 
   return (
-    <div>
+    <div style={{marginBottom: '40px'}}>
       <LogoSection>
         <Logo />
       </LogoSection>
@@ -344,14 +344,6 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
           />
         </div>
       )}
-      <Pagination
-        currentPage={currentPage}
-        totalPage={totalPage}
-        disableNextButton={disabledNextButton}
-        disablePrevButton={disabledPrevButton}
-        handleClickNext={onClickNextPage}
-        handleClickPrev={onClickBackPage}
-      />
     </div>
   );
 };
