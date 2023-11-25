@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_LIST_CONTACT, DELETE_CONTACT } from "../../query";
+import { SectionActionButton } from "./styles";
 
 import {
   Button,
@@ -140,11 +141,11 @@ const ContactList = ({
 
   useEffect(() => {
     if (!loading && data) {
-      const total = getTotalPage(data.contact_aggregate.aggregate.count)
-      if(data.contact_aggregate.aggregate.count < limitDataPage){
+      const total = getTotalPage(data.contact_aggregate.aggregate.count);
+      if (data.contact_aggregate.aggregate.count < limitDataPage) {
         setDisabledNextButton(true);
         setTotalPage(1);
-      }else {
+      } else {
         setTotalPage(total);
       }
     }
@@ -158,16 +159,18 @@ const ContactList = ({
   return (
     <div>
       {contactList}
-      <Button textButton="Add Contact" onClickButton={onClickButton} />
       <InputSearch />
-      <Pagination
-        currentPage={currentPage}
-        totalPage={totalPage}
-        disableNextButton={disabledNextButton}
-        disablePrevButton={disabledPrevButton}
-        handleClickNext={onClickNextPage}
-        handleClickPrev={onClickBackPage}
-      />
+      <SectionActionButton>
+        <Button textButton="Add Contact" onClickButton={onClickButton} />
+        <Pagination
+          currentPage={currentPage}
+          totalPage={totalPage}
+          disableNextButton={disabledNextButton}
+          disablePrevButton={disabledPrevButton}
+          handleClickNext={onClickNextPage}
+          handleClickPrev={onClickBackPage}
+        />
+      </SectionActionButton>
       {/* <Button
         disabled={disabledNextButton}
         textButton="Next"

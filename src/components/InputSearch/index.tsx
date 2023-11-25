@@ -17,7 +17,7 @@ const InputSearch = ({
   };
 
   return (
-    <div>
+    <div style={{display: "flex"}}>
       <Input id="test" type="text" placeholder={placeholder} autoComplete="off"  disabled={false} onChange={handleInputChange}/>
     </div>
   );

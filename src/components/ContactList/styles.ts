@@ -20,8 +20,8 @@ gap: 16px;
   grid-template-rows: repeat(1, 100px);
 }
 @media (max-width: 768px) {
-  grid-template-columns: repeat(1, calc(100% - 12px));
-  grid-template-rows: repeat(1, 100px);
+  grid-template-columns: initial;
+  grid-template-rows: initial;
 }
 `;
 
