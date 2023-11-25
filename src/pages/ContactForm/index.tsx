@@ -1,86 +1,24 @@
+import { useState } from "react";
 import { Formik, Field, FieldArray, Form, ErrorMessage } from "formik";
 import { useMutation } from "@apollo/client";
 import { ADD_CONTACT } from "../../query";
-import styled from "@emotion/styled";
+import { ReactComponent as IconAdd } from "../../assets/image/add.svg";
+import { ReactComponent as IconTrash } from "../../assets/image/trash.svg";
+
+import {
+  Input,
+  Label,
+  MultiplePhoneInput,
+  ContactFormComponent,
+  ButtonSection,
+  Button,
+  IconButton,
+  ErrorFromQuery,
+} from "./styles";
 
 interface ContactFormProps {
   contactForm?: string;
 }
-
-const Input = styled("div")`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-
-  &.phones {
-    margin-right: 4px;
-    margin-left: 4px;
-  }
-
-  input {
-    display: block;
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    outline: none;
-    margin-bottom: 16px;
-
-    &:focus {
-      border: solid 1px rgb(0, 170, 91);
-    }
-  }
-`;
-
-const Label = styled.label`
-  font-weight: bold;
-  display: block;
-  font-size: 14px;
-  margin-bottom: 4px;
-`;
-
-const MultiplePhoneInput = styled.label`
-  display: flex;
-  align-items: baseline;
-
-  button {
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    padding: 4px 14px;
-  }
-`;
-
-const ContactFormComponent = styled("div")`
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 4px;
-  padding: 16px;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 16px;
-  transition: transform 0.3s ease;
-  max-width: 50%;
-  margin: auto;
-  @media (max-width: 1024px) {
-    max-width: initial;
-  }
-`;
-
-const ButtonType = styled.button`
-  background-color: rgb(0, 170, 91);
-  border-color: rgb(0, 170, 91);
-  color: white;
-  font-weight: 800;
-  font-size: 16px;
-  padding: 4px 16px;
-  border: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  margin-bottom: 8px;
-  cursor: pointer;
-`;
-
 interface Contact {
   first_name: string;
   last_name: string;
@@ -94,6 +32,7 @@ const initialValues: Contact = {
 };
 
 const ContactForm = ({ contactForm = "Contact Form" }: ContactFormProps) => {
+  const [errorFromQuery, setErrorFromQuery] = useState<string>("");
   const [addContact] = useMutation(ADD_CONTACT);
 
   const handleSubmit = (values: Contact) => {
@@ -108,6 +47,9 @@ const ContactForm = ({ contactForm = "Contact Form" }: ContactFormProps) => {
         alert("Berhasil Add Contact");
       })
       .catch((error) => {
+        if (error.graphQLErrors[0].message) {
+          setErrorFromQuery(error.graphQLErrors[0].message);
+        }
         console.log(error.graphQLErrors[0].message);
       });
     console.log("formData: ", formData);
@@ -117,6 +59,7 @@ const ContactForm = ({ contactForm = "Contact Form" }: ContactFormProps) => {
     <div>
       {contactForm}
       <ContactFormComponent>
+
         <Formik
           initialValues={initialValues}
           validationSchema={null}
@@ -153,46 +96,52 @@ const ContactForm = ({ contactForm = "Contact Form" }: ContactFormProps) => {
                         <>
                           {values.phones.map((phone, index) => (
                             <MultiplePhoneInput key={index}>
-                              <button type="button" onClick={() => push("")}>
-                                +
-                              </button>
-                              {/* <Button
-                                textButton="+"
+                              <IconButton
+                                className="bg-green"
                                 type="button"
-                                onClickButton={() => remove(index)}
-                              /> */}
+                                onClick={() => push("")}
+                              >
+                                <IconAdd />
+                              </IconButton>
                               <Input className="phones">
                                 <Field
                                   name={`phones.${index}`}
                                   placeholder="Phone Number"
                                 />
                               </Input>
-                              <button
+                              <IconButton
+                                className="bg-red"
                                 type="button"
                                 onClick={() => remove(index)}
                               >
-                                x
-                              </button>
-                              {/* <Button
-                                colorButton="red"
-                                textButton="x"
-                                type="button"
-                                onClickButton={() => push("")}
-                              /> */}
+                                <IconTrash />
+                              </IconButton>
                             </MultiplePhoneInput>
                           ))}
                         </>
                       ) : (
-                        <button type="button" onClick={() => push("")}>
-                          Add Phone
-                        </button>
+                        // <button type="button" onClick={() => push("")}>
+                        //   Add Phone
+                        // </button>
+                        <IconButton
+                          className="bg-green"
+                          type="button"
+                          onClick={() => push("")}
+                        >
+                          <IconAdd /> <p>Add Phone</p>
+                        </IconButton>
                       )}
                     </div>
                   )}
                 </FieldArray>
                 <ErrorMessage name="phones" component="div" />
               </div>
-              <ButtonType type="submit">Submit</ButtonType>
+              {errorFromQuery && (
+                <ErrorFromQuery>{errorFromQuery}</ErrorFromQuery>
+              )}
+              <ButtonSection>
+                <Button type="submit">Submit</Button>
+              </ButtonSection>
             </Form>
           )}
         </Formik>
