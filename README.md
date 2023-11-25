@@ -2,7 +2,7 @@
 
 Link GitHub for source Code.
 
-_GitHub: https://github.com/nickomarsellino/contact-app
+_GitHub: https://github.com/nickomarsellino/contact-app/tree/main
 
 # Create React App
 
