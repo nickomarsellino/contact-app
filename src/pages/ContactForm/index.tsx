@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { Formik, Field, FieldArray, Form, ErrorMessage } from "formik";
 import { useMutation, useQuery } from "@apollo/client";
 import { ADD_CONTACT, GET_DETAIL_CONTACT } from "../../query";
-import { Text } from "../../components";
+import { Text, Skeleton } from "../../components";
 import { ReactComponent as IconAdd } from "../../assets/image/add.svg";
 import { ReactComponent as IconTrash } from "../../assets/image/trash.svg";
 import { ReactComponent as Logo } from "../../assets/image/tokopedia-logo.svg";
@@ -113,78 +113,90 @@ const ContactForm = (props: any) => {
             <Form>
               <Input>
                 <Label htmlFor="first_name">First Name</Label>
-                <Field
-                  disabled={disableAllForm}
-                  id="first_name"
-                  name="first_name"
-                  placeholder="First Name"
-                />
+                {loading ? (
+                  <Skeleton />
+                ) : (
+                  <Field
+                    disabled={disableAllForm}
+                    id="first_name"
+                    name="first_name"
+                    placeholder="First Name"
+                  />
+                )}
                 <ErrorMessage name="first_name" component="div" />
               </Input>
 
               <Input>
                 <Label htmlFor="last_name">Last Name</Label>
-                <Field
-                  disabled={disableAllForm}
-                  id="last_name"
-                  name="last_name"
-                  placeholder="Last Name"
-                />
+                {loading ? (
+                  <Skeleton />
+                ) : (
+                  <Field
+                    disabled={disableAllForm}
+                    id="last_name"
+                    name="last_name"
+                    placeholder="Last Name"
+                  />
+                )}
                 <ErrorMessage name="last_name" component="div" />
               </Input>
 
               <div>
                 <Label htmlFor="phones">Phones</Label>
-                <FieldArray name="phones">
-                  {({ push, remove }) => (
-                    <div>
-                      {values.phones && values.phones.length > 0 ? (
-                        <>
-                          {values.phones.map((phone, index) => (
-                            <MultiplePhoneInput key={index}>
-                              <IconButton
-                                disabled={disableAllForm}
-                                className="bg-green"
-                                type="button"
-                                onClick={() => push("")}
-                              >
-                                <IconAdd />
-                              </IconButton>
-                              <Input className="phones">
-                                <Field
+                {loading ? (
+                  <Skeleton />
+                ) : (
+                  <FieldArray name="phones">
+                    {({ push, remove }) => (
+                      <div>
+                        {values.phones && values.phones.length > 0 ? (
+                          <>
+                            {values.phones.map((phone, index) => (
+                              <MultiplePhoneInput key={index}>
+                                <IconButton
                                   disabled={disableAllForm}
-                                  value={phone.number}
-                                  name={`phones.${index}`}
-                                  placeholder="Phone Number"
-                                />
-                              </Input>
-                              <IconButton
-                                disabled={disableAllForm}
-                                className="bg-red"
-                                type="button"
-                                onClick={() => remove(index)}
-                              >
-                                <IconTrash />
-                              </IconButton>
-                            </MultiplePhoneInput>
-                          ))}
-                        </>
-                      ) : (
-                        // <button type="button" onClick={() => push("")}>
-                        //   Add Phone
-                        // </button>
-                        <IconButton
-                          disabled={disableAllForm}
-                          className="bg-green"
-                          type="button"
-                          onClick={() => push("")}
-                        >
-                          <IconAdd /> <p>Add Phone</p>
-                        </IconButton>
-                      )}
-                    </div>
-                  )}
-                </FieldArray>
+                                  className="bg-green"
+                                  type="button"
+                                  onClick={() => push("")}
+                                >
+                                  <IconAdd />
+                                </IconButton>
+                                <Input className="phones">
+                                  <Field
+                                    disabled={disableAllForm}
+                                    value={phone.number}
+                                    name={`phones.${index}`}
+                                    placeholder="Phone Number"
+                                  />
+                                </Input>
+                                <IconButton
+                                  disabled={disableAllForm}
+                                  className="bg-red"
+                                  type="button"
+                                  onClick={() => remove(index)}
+                                >
+                                  <IconTrash />
+                                </IconButton>
+                              </MultiplePhoneInput>
+                            ))}
+                          </>
+                        ) : (
+                          // <button type="button" onClick={() => push("")}>
+                          //   Add Phone
+                          // </button>
+                          <IconButton
+                            disabled={disableAllForm}
+                            className="bg-green"
+                            type="button"
+                            onClick={() => push("")}
+                          >
+                            <IconAdd /> <p>Add Phone</p>
+                          </IconButton>
+                        )}
+                      </div>
+                    )}
+                  </FieldArray>
+                )}
                 <ErrorMessage name="phones" component="div" />
               </div>
               {errorFromQuery && (

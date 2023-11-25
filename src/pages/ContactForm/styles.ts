@@ -53,6 +53,11 @@ export const ContactFormComponent = styled("div")`
   @media (max-width: 1024px) {
     max-width: initial;
   }
+
+  .skeleton{
+    height: 30px !important;
+    margin-bottom: 16px 
+  }
 `;
 
 export const ButtonSection = styled("div")`
