@@ -4,6 +4,7 @@ export const Input = styled("div")`
   width: 100%;
   display: flex;
   flex-direction: column;
+  margin-bottom: 16px;
 
   input {
     display: block;
@@ -12,7 +13,6 @@ export const Input = styled("div")`
     border: 1px solid #ccc;
     border-radius: 8px;
     outline: none;
-    margin-bottom: 16px;
 
     &:focus {
       border: solid 1px rgb(0, 170, 91);
@@ -20,10 +20,11 @@ export const Input = styled("div")`
   }
 
   &.phones {
+    margin-bottom: 0;
     margin-right: 4px;
     margin-left: 4px;
     input {
-      margin-bottom: 0;
+      margin-bottom: 0px;
     }
   }
 `;
@@ -57,6 +58,13 @@ export const ContactFormComponent = styled("div")`
   .skeleton{
     height: 30px !important;
     margin-bottom: 16px 
+  }
+
+  .error-msg{
+    color: rgb(193, 38, 74);
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-style: italic;
   }
 `;
 
