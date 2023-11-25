@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_LIST_CONTACT, DELETE_CONTACT } from "../../query";
+import {
+  GET_LIST_CONTACT,
+  DELETE_CONTACT,
+  GET_SEARCH_FIRST_NAME,
+} from "../../query";
 import { SectionActionButton, LogoSection } from "./styles";
 import { ReactComponent as Logo } from "../../assets/image/tokopedia-logo.svg";
 
@@ -41,6 +45,8 @@ const getTotalPage = (totalData: number, totalFavorite: number) => {
 };
 
 const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
+  const [dataContact, setDataContact] = useState<any>({});
+  const [dataContactFavorite, setDataContactFavorite] = useState<any>({});
   const [storageFavoriteList, setStorageFavoriteList] = useState<number[]>([]);
 
   // Handle Pagination
@@ -53,8 +59,75 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
   const [disabledPrevButton, setDisabledPrevButton] = useState<boolean>(true);
 
   // Handle Search
+  const [searchActive, setSearchActive] = useState<boolean>(false);
   const [valueSearch, setValueSearch] = useState<string>("");
   const [valueCategorySearch, setValueCategorySearch] = useState<string>("");
+
+  const restructuredDataSearch = (data: any) => {
+    console.log("@@@->> data: ", data);
+    const restructuredData = data.contact.map(
+      (contact: {
+        contact: { id: any; first_name: any; last_name: any; phones: any[] };
+      }) => {
+        return {
+          id: contact.contact.id,
+          first_name: contact.contact.first_name,
+          last_name: contact.contact.last_name,
+          phones: contact.contact.phones.map((phone: { number: any }) => {
+            return {
+              number: phone.number,
+            };
+          }),
+        };
+      }
+    );
+    setDataContact(restructuredData);
+  };
+
+  const getDataBySearchCategory = (value: string) => {
+    console.log("getDataBySearchCategory: ", valueCategorySearch);
+
+    if(valueCategorySearch === "first_name"){
+      const query = {
+        where: {
+          contact: {
+            first_name: {
+              _ilike: `%${value}%`,
+            },
+          },
+        },
+      };
+      return query;
+    }
+
+    if(valueCategorySearch === "last_name"){
+      const query = {
+        where: {
+          contact: {
+            last_name: {
+              _ilike: `%${value}%`,
+            },
+          },
+        },
+      };
+      return query;
+    }
+
+    if(valueCategorySearch === "phones"){
+      const query = {
+        where: {
+          contact: {
+            phones: {
+              number: {
+                _iregex: `${value}`,
+              }
+            }
+          },
+        },
+      };
+      return query;
+    }
+  };
 
   const getData = {
     whereFavoriteList: {
@@ -74,6 +147,15 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
 
   const { loading, error, data, refetch } = useQuery(GET_LIST_CONTACT, {
     variables: { ...getData },
+    skip: valueSearch.length > 0,
+  });
+  const {
+    loading: loadingSearch,
+    data: dataSearch,
+    refetch: refetchSearch,
+  } = useQuery(GET_SEARCH_FIRST_NAME, {
+    variables: { ...getDataBySearchCategory(valueSearch) },
+    skip: !valueSearch,
   });
   const [deleteContact] = useMutation(DELETE_CONTACT, {
     refetchQueries: [GET_LIST_CONTACT],
@@ -150,8 +232,15 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
   };
 
   const handleGetSearchValue = () => {
-    console.log("valueSearch: ", valueSearch);
-    console.log("valueCategorySearch: ", valueCategorySearch);
+    if (valueSearch.length === 0) {
+      refetch({
+        variables: { ...getData },
+      });
+    } else {
+      refetchSearch({
+        variables: { ...getDataBySearchCategory(valueSearch) },
+      });
+    }
   };
 
   useEffect(() => {
@@ -160,6 +249,9 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
 
   useEffect(() => {
     if (!loading && data) {
+      console.log("data: ", data);
+      setDataContact(data.contact);
+      setDataContactFavorite(data.contactFavorite);
       const totalFavorite = getCountFavoriteListFromStorage();
       const totalDataQuery = data.contact_aggregate.aggregate.count;
       const total = getTotalPage(
@@ -175,6 +267,25 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
     }
   }, [loading, data]);
 
+  useEffect(() => {
+    if (!loadingSearch && dataSearch) {
+      restructuredDataSearch(dataSearch);
+    }
+  }, [loadingSearch, dataSearch, valueSearch]);
+
+  useEffect(() => {
+    if (valueSearch.length > 0) {
+      setSearchActive(true);
+    } else {
+      setSearchActive(false);
+    }
+  }, [valueSearch]);
+
+
+  // useEffect(() => {
+  //   console.log(valueCategorySearch);
+  // }, [valueCategorySearch]);
+
   // if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
@@ -183,7 +294,12 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
       <LogoSection>
         <Logo />
       </LogoSection>
-      <InputSearch setValueSearch={setValueSearch} setValueCategorySearch={setValueCategorySearch} handleGetSearchValue={handleGetSearchValue}/>
+      <InputSearch
+        valueSearch={valueSearch}
+        setValueSearch={setValueSearch}
+        setValueCategorySearch={setValueCategorySearch}
+        handleGetSearchValue={handleGetSearchValue}
+      />
       <Text>{contactList}</Text>
       <SectionActionButton>
         <Button textButton="Add New Contact" onClickButton={onClickButton} />
@@ -196,40 +312,38 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
           handleClickPrev={onClickBackPage}
         />
       </SectionActionButton>
-      {/* <Button
-        disabled={disabledNextButton}
-        textButton="Next"
-        onClickButton={onClickNextPage}
-      />
-      <Button
-        disabled={disabledPrevButton}
-        textButton="Prev"
-        onClickButton={onClickBackPage}
-      /> */}
-      {!loading && data.contactFavorite.length > 0 && (
+      {!searchActive && (
+        <>
+          {!loading && dataContactFavorite.length > 0 && (
+            <div>
+              <Text>Favorite Contact</Text>
+              <ContactListComponent
+                isLoading={loading}
+                favoriteList={storageFavoriteList}
+                listData={
+                  !loading && dataContactFavorite && dataContactFavorite
+                }
+                handleClickDelete={onClickDeleteContact}
+                handleClickFavorite={onClickFavoriteContact}
+                onClickDetail={onClickDetail}
+              />
+            </div>
+          )}
+        </>
+      )}
+      {!loading && dataContact.length > 0 && (
         <div>
-          <Text>Favorite Contact</Text>
+          <Text>Regular Contact</Text>
           <ContactListComponent
             isLoading={loading}
             favoriteList={storageFavoriteList}
-            listData={!loading && data.contactFavorite && data.contactFavorite}
+            listData={!loading && dataContact && dataContact}
             handleClickDelete={onClickDeleteContact}
             handleClickFavorite={onClickFavoriteContact}
             onClickDetail={onClickDetail}
           />
         </div>
       )}
-      <div>
-        <Text>Regular Contact</Text>
-        <ContactListComponent
-          isLoading={loading}
-          favoriteList={storageFavoriteList}
-          listData={!loading && data.contact && data.contact}
-          handleClickDelete={onClickDeleteContact}
-          handleClickFavorite={onClickFavoriteContact}
-          onClickDetail={onClickDetail}
-        />
-      </div>
       <Pagination
         currentPage={currentPage}
         totalPage={totalPage}

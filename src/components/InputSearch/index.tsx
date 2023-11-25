@@ -7,12 +7,14 @@ import {
 } from "../../components";
 interface InputSearchProps {
   handleGetSearchValue?: () => void,
+  valueSearch?: string
   setValueSearch?: any
   setValueCategorySearch?: any
 }
 
 const InputSearch = ({
   handleGetSearchValue,
+  valueSearch,
   setValueSearch,
   setValueCategorySearch,
 }: InputSearchProps) => {
@@ -21,6 +23,7 @@ const InputSearch = ({
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValueCategorySearch(event.target.value);
+    setValueSearch('');
     if(event.target.value === "first_name"){
       setPlaceholder('Search Contact by First Name');
     } 
@@ -79,6 +82,7 @@ const InputSearch = ({
           autoComplete="off"
           disabled={selectedSearchBy === ''}
           onChange={handleInputChange}
+          value={valueSearch}
         />
         <Button disabled={selectedSearchBy === ''} textButton="Search" onClickButton={handleGetSearchValue}/>
       </SearchSection>

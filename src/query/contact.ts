@@ -119,3 +119,30 @@ export const GET_DETAIL_CONTACT = gql`
     }
   }
 `;
+
+export const GET_SEARCH_FIRST_NAME = gql`
+  query GetPhoneList(
+    $where: phone_bool_exp
+    $distinct_on: [phone_select_column!]
+    $limit: Int = 10
+    $offset: Int = 0
+    $order_by: [phone_order_by!]
+  ) {
+    contact: phone(
+      where: $where
+      distinct_on: $distinct_on
+      limit: $limit
+      offset: $offset
+      order_by: $order_by
+    ) {
+      contact {
+        id
+        last_name
+        first_name
+        phones {
+          number
+        }
+      }
+    }
+  }
+`;
