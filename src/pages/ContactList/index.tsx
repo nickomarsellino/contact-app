@@ -51,7 +51,7 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
 
   // Handle Pagination
   const [totalPage, setTotalPage] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [offsetPage, setOffsetPage] = useState<number>(0);
 
   // State Button Pagination
@@ -141,7 +141,7 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
     limit: limitDataPage,
     offset: offsetPage,
   };
-
+ 
   const { loading, error, data, refetch } = useQuery(GET_LIST_CONTACT, {
     variables: { ...getData },
     skip: valueSearch.length > 0,
@@ -203,15 +203,19 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
   };
 
   const onClickNextPage = () => {
-    const currentPagination = currentPage + 1;
+    const currentPagination = currentPage;
     const currentOffset = currentPagination * limitDataPage;
-    if (currentPagination === totalPage) {
+
+    console.log('@@@ currentPagination: ', currentPagination);
+    console.log('@@@ currentOffset: ', currentOffset);
+    console.log('@@@ totalPage: ', totalPage);
+    if (currentPagination + 1 === totalPage) {
       setDisabledNextButton(true);
       setDisabledPrevButton(false);
     } else {
       setDisabledPrevButton(false);
     }
-    setCurrentPage(currentPagination);
+    setCurrentPage(currentPagination + 1);
     setOffsetPage(currentOffset);
   };
 
@@ -247,18 +251,19 @@ const ContactList = ({ contactList = "Contact Apps" }: ContactListProps) => {
   useEffect(() => {
     if (!loading && data) {
       setDataContact(data.contact);
-      setDataContactFavorite(data.contactFavorite);
+      setDataContactFavorite(data.contactFavorite);  
       const totalFavorite = getCountFavoriteListFromStorage();
       const totalDataQuery = data.contact_aggregate.aggregate.count;
       const total = getTotalPage(
         data.contact_aggregate.aggregate.count,
         totalFavorite
       );
-      if (totalDataQuery - totalFavorite < limitDataPage) {
+      console.log('@@@ total: ', total);
+      if (totalDataQuery < limitDataPage) {
         setDisabledNextButton(true);
         setTotalPage(1);
       } else {
-        setTotalPage(total);
+        setTotalPage(total + 1);
       }
     }
   }, [loading, data]);

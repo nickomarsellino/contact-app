@@ -24,7 +24,7 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <PaginationSection>
       {/* <LabelPage>{`${(currentPage && currentPage === 0) ? 1 : currentPage && currentPage + 1} of ${totalPage && totalPage + 1} Page`}</LabelPage> */}
-      <LabelPage>{`${currentPage !== undefined ? currentPage + 1 : 1} of ${totalPage && totalPage + 1} Page`}</LabelPage>
+      <LabelPage>{`${currentPage !== undefined ? currentPage : 1} of ${totalPage && totalPage} Page`}</LabelPage>
       <PaginationActionButton disabled={disablePrevButton} className={`${disablePrevButton && 'disabled'} prev-button`} onClick={handleClickPrev}>
         <ArrowLeft />
       </PaginationActionButton>
